@@ -9,8 +9,6 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install langchain langchain-ollama --break-system-packages
-
-
+RUN pip install langchain langchain-ollama ollama --break-system-packages
 
 WORKDIR /app/src
