@@ -1,14 +1,17 @@
+1. Copy `env.example` and update the variables to your preference
+
 Start the app by running:
 
 ```bash
 docker compose up
+# or
+docker compose -f docker-compose.yml -f docker-compose.jupyter.yml
 ```
 
-If you added a package and want it installed in the very hacky way I am currently doing this, you may need to add `--build` to your command.
+These two projects are exposed depending on your docker command.
 
-```bash
-docker compose up --build
-```
+- http://localhost:8080 - Open Web UI
+- http://localhost:8888?token=<YOUR JUPYTER TOKEN> - Opens jupyter lab
 
 To open up a TTY in the app and write code around ollama
 

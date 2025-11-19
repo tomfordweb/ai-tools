@@ -1,0 +1,16 @@
+services:
+  jupyterlab:
+    networks:
+      - ollama-docker
+    depends_on:
+      - ollama
+    image: quay.io/jupyter/base-notebook:x86_64-ubuntu-24.04
+    container_name: jupyterlab
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./jupyter:/home/${USER?USER}/work # Mount your local 'work' directory into the container
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN?JUPYTER_TOKEN}
+    working_dir: /home/${USER?USER}/work

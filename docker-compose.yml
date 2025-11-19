@@ -7,7 +7,6 @@ services:
     volumes:
       - ./src/:/app/src
       - ./requirements.txt:/app/requirements.txt
-    restart: unless-stopped
     depends_on:
       - ollama
       - ollama-webui
@@ -20,7 +19,6 @@ services:
     container_name: ollama
     pull_policy: always
     tty: true
-    restart: unless-stopped
     image: docker.io/ollama/ollama:latest
     ports:
       - 7869:11434
@@ -56,7 +54,6 @@ services:
       - NO_PROXY=host.docker.internal
     extra_hosts:
       - host.docker.internal:host-gateway
-    restart: unless-stopped
     networks:
       - ollama-docker
 
