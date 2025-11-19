@@ -7,6 +7,7 @@ services:
     volumes:
       - ./src/:/app/src
       - ./requirements.txt:/app/requirements.txt
+    restart: unless-stopped
     depends_on:
       - ollama
       - ollama-webui
