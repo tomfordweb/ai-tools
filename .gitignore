@@ -1,2 +1,3 @@
 ollama/*
 .env
+jupyter/.ipynb_checkpoints

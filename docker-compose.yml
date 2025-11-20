@@ -50,7 +50,7 @@ services:
       - WEBUI_AUTH=False
       - WEBUI_NAME=Ollama
       - WEBUI_URL=http://localhost:8080
-      - WEBUI_SECRET_KEY=t0p-s3cr3t
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY?WEBUI_SECRET_KEY}
       - NO_PROXY=host.docker.internal
     extra_hosts:
       - host.docker.internal:host-gateway
