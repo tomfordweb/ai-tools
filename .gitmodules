@@ -9,4 +9,4 @@
 	url = git@github.com:tomfordweb/GenAI_Agents.git
 [submodule "jupyter/prompt-engineering"]
 	path = jupyter/prompt-engineering
-	url = git@github.com:NirDiamant/Prompt_Engineering.git
+	url = git@github.com:tomfordweb/Prompt_Engineering.git
