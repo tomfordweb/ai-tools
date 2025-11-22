@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 RUN apk update
-RUN apk add python3 py3-pip
+RUN apk add python3 py3-pip typescript npm
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 WORKDIR /app

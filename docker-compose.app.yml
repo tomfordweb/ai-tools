@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    command: tail -f /dev/null
+    volumes:
+      - ./src/:/app/src
+      - ./requirements.txt:/app/requirements.txt
+    depends_on:
+      - ollama
+      - ollama-webui
+    networks:
+      - ollama-docker
