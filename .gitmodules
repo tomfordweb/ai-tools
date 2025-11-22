@@ -1,0 +1,12 @@
+[submodule "jupyter/agents-towards-production"]
+	path = jupyter/agents-towards-production
+	url = git@github.com:tomfordweb/agents-towards-production.git
+[submodule "jupyter/rag-techniques"]
+	path = jupyter/rag-techniques
+	url = git@github.com:tomfordweb/RAG_Techniques.git
+[submodule "jupyter/genai-agents"]
+	path = jupyter/genai-agents
+	url = git@github.com:tomfordweb/GenAI_Agents.git
+[submodule "jupyter/prompt-engineering"]
+	path = jupyter/prompt-engineering
+	url = git@github.com:NirDiamant/Prompt_Engineering.git
