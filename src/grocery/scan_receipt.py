@@ -7,23 +7,24 @@ import argparse
 import imutils
 import cv2
 import re
+import os
 
 pricePattern = r"([0-9]+\.[0-9]+)"
 upcPattern = r"([0-9]{4})"
 
 
-def parseArguments():
-    # construct the argument parser and parse the arguments
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", required=True, help="path to input receipt image")
-    ap.add_argument(
-        "-d",
-        "--debug",
-        type=int,
-        default=-1,
-        help="whether or not we are visualizing each step of the pipeline",
-    )
-    return vars(ap.parse_args())
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--image", help="path to input receipt image")
+ap.add_argument("-q", "--directory", help="path to input receipt image directory")
+ap.add_argument(
+    "-d",
+    "--debug",
+    type=int,
+    default=-1,
+    help="whether or not we are visualizing each step of the pipeline",
+)
+args = vars(ap.parse_args())
 
 
 # I'm just a midwest meijers man
@@ -57,15 +58,16 @@ def convertPdfToImage(path: str):
     return image
 
 
-def main():
-    args = parseArguments()
-
-    receipt = convertPdfToImage(args["image"])
+def extractReceipt(path: str):
+    receipt = convertPdfToImage(path)
 
     if args["debug"] > 0:
         cv2.imshow("receipt", receipt)
         cv2.waitKey(0)  # Wait for a key press to close the window
         cv2.destroyAllWindows()
+
+        # PSM 5 flips it on its side so we parse everything as columns based on their vertical orientation
+        # it is slightly more accurate.
     text = pytesseract.image_to_string(
         cv2.cvtColor(receipt, cv2.COLOR_BGR2RGB),
         config="--psm 5",
@@ -84,6 +86,18 @@ def main():
     print("========================")
     for line in processedMeijerItems:
         print(line)
+
+
+def main():
+    if args["directory"]:
+        for item_name in os.listdir(args["directory"]):
+            full_path = os.path.join(args["directory"], item_name)
+            if os.path.isfile(full_path):
+                extractReceipt(full_path)
+        pass
+
+    if args["image"]:
+        extractReceipt(args["image"])
 
 
 if __name__ == "__main__":
