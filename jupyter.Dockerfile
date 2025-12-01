@@ -3,6 +3,8 @@ USER root
 # Avoid prompts from apt during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN pip install jupyterlab-vim
+
 RUN apt-get update
 RUN apt-get install -y gcc python3-dev build-essential \
 # requirements of cv2
