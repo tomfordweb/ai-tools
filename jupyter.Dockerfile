@@ -3,8 +3,14 @@ USER root
 # Avoid prompts from apt during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update
-RUN apt install -y gcc python3-dev build-essential \
+RUN apt-get update
+RUN apt-get install -y gcc python3-dev build-essential \
+# requirements of cv2
+  ffmpeg libsm6 libxext6 \
+# requirements of pdf2image
+  poppler-utils \
+# tesseract
+ tesseract-ocr libtesseract-dev \
   && apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 

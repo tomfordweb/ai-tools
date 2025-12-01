@@ -1,42 +1,30 @@
-import sys
-from imutils.perspective import four_point_transform
 from pdf2image import convert_from_path
 import numpy as np
 import pytesseract
 import argparse
-import imutils
 import cv2
 import re
 import os
 
-pricePattern = r"([0-9]+\.[0-9]+)"
-upcPattern = r"([0-9]{4})"
 
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="path to input receipt image")
-ap.add_argument("-q", "--directory", help="path to input receipt image directory")
-ap.add_argument(
-    "-d",
-    "--debug",
-    type=int,
-    default=-1,
-    help="whether or not we are visualizing each step of the pipeline",
-)
-args = vars(ap.parse_args())
 
 
 # I'm just a midwest meijers man
 def processMeijerLineItems(data: list):
     output = list()
 
+    pricePattern = r"([0-9]+\.[0-9]+)"
+    upcPattern = r"([0-9]{4})"
     for index, row in enumerate(data):
         if (
             re.search(upcPattern, row) is not None
             and re.search(pricePattern, row) is not None
+            and "was" not in row
+            and "DEPOSIT" not in row
         ):
-            output.append(row)
+            # Remove everything after the product name (keep UPC and Product only)
+            output.append(re.sub(pricePattern + r"\s+.*", "", row))
 
     return output
 
@@ -58,10 +46,9 @@ def convertPdfToImage(path: str):
     return image
 
 
-def extractReceipt(path: str):
+def extractReceipt(args, path: str):
     receipt = convertPdfToImage(path)
-
-    if args["debug"] > 0:
+    if "debug" in args:
         cv2.imshow("receipt", receipt)
         cv2.waitKey(0)  # Wait for a key press to close the window
         cv2.destroyAllWindows()
@@ -73,32 +60,39 @@ def extractReceipt(path: str):
         config="--psm 5",
     )
 
-    if args["debug"] > 0:
+    if "debug" in args:
         # show the raw output of the OCR process
         print("[INFO] raw output:")
         print("==================")
         print(text)
         print("\n")
 
-    processedMeijerItems = processMeijerLineItems(text.split("\n"))
+    processedData = processMeijerLineItems(text.split("\n"))
 
-    print("[INFO] Formatted output")
-    print("========================")
-    for line in processedMeijerItems:
-        print(line)
+    if "debug" in args:
+        print("[INFO] Formatted output")
+        print("========================")
+        for line in processedData:
+            print(line)
+    return processedData
 
 
-def main():
+def scan(args):
+    items = list()
+
+    
     if args["directory"]:
         for item_name in os.listdir(args["directory"]):
             full_path = os.path.join(args["directory"], item_name)
             if os.path.isfile(full_path):
-                extractReceipt(full_path)
+                items = items + extractReceipt(args, full_path)
         pass
 
-    if args["image"]:
-        extractReceipt(args["image"])
+    elif args["image"]:
+        items = extractReceipt(args, args["image"])
+    else:
+        raise RuntimeError('unable to process argument')
+    for item in items:
+        print(item)
+    return items
 
-
-if __name__ == "__main__":
-    main()
