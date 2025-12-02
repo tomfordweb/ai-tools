@@ -1,12 +1,35 @@
-This is a docker ollama setup. There is a lot of naunce behind getting ollama running in all of the different environments.
-
-You can get by on CPU compute, but its not very performant. Basically. You can only get ollama + docker + cuda on Linux.
-
 # Installation
 
-1. Get your ollama or jupyter setup going.
-2. Clone this repository
-3. git submodule update --init
+1. Clone this repository
+2. git submodule update --init
+
+# Usage
+
+There are a few ways to use this project. It is just a combination of tools.
+
+## Jupyter (connect to docker or 127.0.0.1)
+
+To boot up the jupyter project which should be able to communicate with anything on the docker network (or your network):
+
+```
+python -m venv venv
+source venv/bin/activate
+jupyter lab jupyter
+```
+
+You may need to mess with some ports or addresses for your setup - There should be some example notebooks in the base directory of the jupyter lab.
+
+```
+http://127.0.0.1:7869 - ollama docker project
+http://127.0.0.1:11434 - self hosts ollama - probably
+http://127.0.0.1:1234 - LMStudio
+```
+
+## Self Hosted Ollama Docker
+
+There is a lot of naunce behind getting ollama running in all of the different environments. I have only run this on a linux environment to things may be different for win/mac.
+
+From what I can tell, you can only use docker + ollama + gpu on linux.
 
 # Usage
 
@@ -23,40 +46,13 @@ Start the app by running:
 ```bash
 # CPU Only
 docker compose up -d
-# CPU and Jupyter
-docker compose up -f docker-compose.jupyter.yml up -d
-# GPU and Jupyter
-docker compose \
- -f docker-compose.yml \
- -f docker-compose.jupyter.yml \
- -f docker-compose.gpu.yml \
- up -d
-# Everything
-docker compose \
- -f docker-compose.yml \
- -f docker-compose.jupyter.yml \
- -f docker-compose.gpu.yml \
- -f docker-compose.app.yml \
- up -d
+# GPU
+docker compose up -f docker-compose.gpu.yml up -d
 ```
 
-These two projects are exposed depending on your docker command.
+- [Open Web UI](http://localhost:8080)
 
-- http://localhost:8080 - Open Web UI
-- http://localhost:8888?token=<YOUR JUPYTER TOKEN> - Opens jupyter lab. Which seems to be a better experience for hacking scripts together.
-
-If you want to write code:
-
-```bash
-docker compose exec app sh
-
-# JS
-echo 'console.log("hello world");' >> hello.ts
-npx tsx hello.ts
-
-# Python
-python ./someScript
-```
+# Tools
 
 If you would like to download a model progmatically:
 

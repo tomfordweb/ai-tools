@@ -1,3 +1,4 @@
-ollama/*
+ollama
 .env
+venv
 jupyter/.ipynb_checkpoints
